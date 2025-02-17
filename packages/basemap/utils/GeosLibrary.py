@@ -249,15 +249,7 @@ class GeosLibrary(object):
         # Define custom configure and build options.
         if os.name == "nt":
             win64 = 8 * struct.calcsize("P") == 64
-            config_opts += [
-                "-DCMAKE_CXX_FLAGS='/wd4251 /wd4355 /wd4458 /wd4530 /EHsc'",
-                "-DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON",
-                "-DBUILD_SHARED_LIBS=OFF",
-                "-DGEOS_BUILD_STATIC=ON",
-                "-DGEOS_BUILD_SHARED=OFF",
-                f"-DCMAKE_INSTALL_PREFIX={installdir}",
-                "-DCMAKE_BUILD_TYPE=Release",
-            ]
+            config_opts += ["-DCMAKE_CXX_FLAGS='/wd4251 /wd4355 /wd4458 /wd4530 /EHsc'"]
             if version >= (3, 6, 0) and sys.version_info[:2] >= (3, 3):
                 config_opts = ["-A", "x64" if win64 else "Win32"] + config_opts
                 if toolset is not None:
