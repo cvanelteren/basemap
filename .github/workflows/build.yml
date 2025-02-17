@@ -64,7 +64,7 @@ jobs:
           echo "GEOS_DIR=$HOME/geo" >> $GITHUB_ENV
           echo "Runner OS: ${RUNNER_OS}"
           echo "Set GEO_DIR to: ${GEOS_DIR}"
-          ls -la ${{ env.GEO_DIR }}
+          ls -la ${{ env.GEO_DIRS }}
 
       - name: Set GEO_DIR (Windows)
         if: runner.os == 'Windows'
@@ -72,8 +72,8 @@ jobs:
         run: |
           echo "GEOS_DIR=./geo" >> $GITHUB_ENV
           echo "Runner OS: ${RUNNER_OS}"
-          echo "Set GEO_DIR to: ${GEO_DIR}"
-          ls -la ${{ env.GEO_DIR }}
+          echo "Set GEO_DIR to: ${GEOS_DIR}"
+          ls -la ${{ env.GEOS_DIR }}
 
       - name: Build wheels
         env:
