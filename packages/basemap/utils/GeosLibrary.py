@@ -30,6 +30,7 @@ import contextlib
 import subprocess
 import datetime as dt
 from zipfile import ZipFile
+
 try:
     from urllib.request import urlopen
 except ImportError:
@@ -168,7 +169,9 @@ class GeosLibrary(object):
                 newtext = oldtext.replace(" const", "")
                 for line in lines:
                     fd.write(line.replace(oldtext, newtext).encode())
-            hfile = os.path.join(zipfold, "include", "geos", "geomgraph", "DirectedEdgeStar.h")
+            hfile = os.path.join(
+                zipfold, "include", "geos", "geomgraph", "DirectedEdgeStar.h"
+            )
             with io.open(hfile, "r", encoding="utf-8") as fd:
                 lines = fd.readlines()
             with io.open(hfile, "wb") as fd:
@@ -231,19 +234,30 @@ class GeosLibrary(object):
         config_opts = [
             "-DCMAKE_BUILD_TYPE=Release",
             "-DCMAKE_INSTALL_PREFIX={0}".format(installdir),
-            "-D{0}=OFF".format("GEOS_ENABLE_TESTS" if version < (3, 8, 0)
-                               else "BUILD_TESTING")
+            "-D{0}=OFF".format(
+                "GEOS_ENABLE_TESTS" if version < (3, 8, 0) else "BUILD_TESTING"
+            ),
         ]
         build_opts = [
-            "--config", "Release",
-            "--target", "install",
+            "--config",
+            "Release",
+            "--target",
+            "install",
         ]
         build_env = os.environ.copy()
 
         # Define custom configure and build options.
         if os.name == "nt":
-            win64 = (8 * struct.calcsize("P") == 64)
-            config_opts += ["-DCMAKE_CXX_FLAGS='/wd4251 /wd4355 /wd4458 /wd4530 /EHsc'"]
+            win64 = 8 * struct.calcsize("P") == 64
+            config_opts += [
+                "-DCMAKE_CXX_FLAGS='/wd4251 /wd4355 /wd4458 /wd4530 /EHsc'",
+                "-DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON",
+                "-DBUILD_SHARED_LIBS=OFF",
+                "-DGEOS_BUILD_STATIC=ON",
+                "-DGEOS_BUILD_SHARED=OFF",
+                f"-DCMAKE_INSTALL_PREFIX={installdir}",
+                "-DCMAKE_BUILD_TYPE=Release",
+            ]
             if version >= (3, 6, 0) and sys.version_info[:2] >= (3, 3):
                 config_opts = ["-A", "x64" if win64 else "Win32"] + config_opts
                 if toolset is not None:
@@ -257,11 +271,13 @@ class GeosLibrary(object):
                 config_opts = ["-G", "NMake Makefiles"] + config_opts
                 config_opts += ["-DCMAKE_EXE_LINKER_FLAGS='/MANIFEST:NO'"]
                 config_opts += ["-DCMAKE_SHARED_LINKER_FLAGS='/MANIFEST:NO'"]
-                build_opts.extend([
-                    "--",
-                    "WIN64={0}".format("YES" if win64 else "NO"),
-                    "BUILD_BATCH={0}".format("YES" if njobs > 1 else "NO"),
-                ])
+                build_opts.extend(
+                    [
+                        "--",
+                        "WIN64={0}".format("YES" if win64 else "NO"),
+                        "BUILD_BATCH={0}".format("YES" if njobs > 1 else "NO"),
+                    ]
+                )
                 if sys.version_info[:2] < (3, 3):
                     build_opts += ["MSVC_VER=1500"]
         else:
@@ -281,5 +297,6 @@ class GeosLibrary(object):
             os.makedirs(installdir)
         except OSError:
             pass
-        subprocess.call(["cmake", "--build", "."] + build_opts,
-                        cwd=builddir, env=build_env)
+        subprocess.call(
+            ["cmake", "--build", "."] + build_opts, cwd=builddir, env=build_env
+        )
