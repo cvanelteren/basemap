@@ -113,7 +113,9 @@ jobs:
           CIBW_TEST_COMMAND_WINDOWS: >-
             pip install pytest pytest-cov &&
             pip install {wheel} &&
-            echo "Project path: {project}" &&
+            echo "Checking package structure:" &&
+            python -c "import mpl_toolkits; print('mpl_toolkits location:', mpl_toolkits.__file__)" &&
+            python -c "from mpl_toolkits import basemap; print('basemap location:', basemap.__file__)" &&
             python -m pytest "{project}\test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
 
           CIBW_TEST_COMMAND: >-
