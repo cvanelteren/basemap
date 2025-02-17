@@ -75,7 +75,7 @@ jobs:
           CIBW_SKIP: "*-manylinux_i686 *-musllinux* pp*"
 
           CIBW_BEFORE_BUILD: >
-            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR}}', generator='Unix Makefiles', njobs=16)"
+            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR}}', njobs=16)"
 
           CIBW_BEFORE_BUILD_WINDOWS: >-
             python -m pip install delvewheel &&
