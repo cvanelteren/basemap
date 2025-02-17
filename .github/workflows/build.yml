@@ -61,7 +61,8 @@ jobs:
       - name: Set GEO src directory (Unix)
         shell: bash
         run: |
-          echo GEO_DIR={project}/geos
+          GEOS_PATH="${{ github.workspace }}/geo"
+          echo "GEO_DIR=${GEOS_PATH}" >> $GITHUB_ENV
           echo "Runner OS: ${RUNNER_OS}"
           echo "Set GEO_DIR to: ${GEO_DIR}"
           ls -la $GEO_DIR
