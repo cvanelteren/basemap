@@ -80,7 +80,9 @@ jobs:
           CIBW_SKIP: "*-manylinux_i686 *-musllinux* pp*"
           CIBW_ENVIRONMENT_LINUX: "GEOS_DIR=/project/geo"
           CIBW_ENVIRONMENT_MACOS: "GEOS_DIR=/project/geo"
-          CIBW_ENVIRONMENT_WINDOWS: "GEOS_DIR=D:/a/basemap/basemap/packages/basemap/"
+          CIBW_ENVIRONMENT_WINDOWS: |
+            GEOS_DIR=D:/a/basemap/basemap/packages/basemap/
+            PATH=${GEOS_DIR}/geo;%PATH%
 
           CIBW_BEFORE_BUILD: >
             python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEOS_DIR}}', njobs=16)"
