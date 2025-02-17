@@ -63,11 +63,7 @@ jobs:
       - name: Set GEO src directory
         shell: bash
         run: |
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            echo "GEO_DIR=${GITHUB_WORKSPACE}/geo" >> $GITHUB_ENV
-          else
-            echo "GEO_DIR=${GITHUB_WORKSPACE}/geo" >> $GITHUB_ENV
-          fi
+          echo "GEO_DIR=${GITHUB_WORKSPACE}/geo" >> $GITHUB_ENV
 
       - name: Build wheels
         env:
@@ -79,11 +75,13 @@ jobs:
 
           CIBW_ENVIRONMENT_WINDOWS: |
             GEOS_DIR=${{ env.GEO_DIR }}
-            INCLUDE=${{ env.GEO_DIR }}/include;%INCLUDE%
-            LIB=${{ env.GEO_DIR }}/lib;%LIB%
-            PATH=${{ env.GEO_DIR }}/bin;%PATH%
+            INCLUDE=${{ env.GEO_DIR }}/include;%%INCLUDE%%
+            LIB=${{ env.GEO_DIR }}/lib;%%LIB%%
+            PATH=${{ env.GEO_DIR }}/bin;%%PATH%%
             CMAKE_GENERATOR="Visual Studio 17 2022"
             CMAKE_GENERATOR_PLATFORM="x64"
+            CFLAGS="/I${{ env.GEO_DIR }}/include"
+            LDFLAGS="/LIBPATH:${{ env.GEO_DIR }}/lib"
 
           CIBW_ENVIRONMENT_LINUX: |
             GEOS_DIR=${{ env.GEO_DIR }}
