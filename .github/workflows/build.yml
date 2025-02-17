@@ -61,19 +61,19 @@ jobs:
       - name: Set GEO src directory (Unix)
         shell: bash
         run: |
-          echo "GEO_DIR=${GITHUB_WORKSPACE}/geo" >> $GITHUB_ENV
+          echo "GEO_DIR=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
           echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           echo "Runner OS: ${RUNNER_OS}"
-          echo "Set GEO_DIR to: ${GITHUB_WORKSPACE}/geo"
+          echo "Set GEO_DIR to: ${GITHUB_WORKSPACE}"
           ls -la ${GITHUB_WORKSPACE}
-          mkdir -p ${GITHUB_WORKSPACE}/geo
-          ls -la ${GITHUB_WORKSPACE}/geo
+          mkdir -p ${GITHUB_WORKSPACE}
+          ls -la ${GITHUB_WORKSPACE}
 
       - name: Debug Path Handling
         shell: bash
         run: |
           echo "GITHUB_WORKSPACE raw: ${GITHUB_WORKSPACE}"
-          echo "Constructed path: ${GITHUB_WORKSPACE}/geo"
+          echo "Constructed path: ${GITHUB_WORKSPACE}"
           echo "After setting:"
           echo "GEO_DIR: $GEO_DIR"
 
