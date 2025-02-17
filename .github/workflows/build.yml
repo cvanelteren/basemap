@@ -60,18 +60,29 @@ jobs:
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==2.16.2
 
-      - name: Set GEO src directory
-        shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+      - name: Set GEO src directory (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          echo "GEO_DIR=$env:GITHUB_WORKSPACE\geo" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
+          echo "Runner OS: $env:RUNNER_OS"
+          echo "Set GEO_DIR to: $env:GITHUB_WORKSPACE\geo"
+          Get-ChildItem $env:GITHUB_WORKSPACE
+          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\geo"
+          Get-ChildItem "$env:GITHUB_WORKSPACE\geo"
+
+      - name: Set GEO src directory (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
           echo "GEO_DIR=${GITHUB_WORKSPACE}/geo" >> $GITHUB_ENV
           echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           echo "Runner OS: ${RUNNER_OS}"
           echo "Set GEO_DIR to: ${GITHUB_WORKSPACE}/geo"
-          ls -la ${GITHUB_WORKSPACE} || true
-          echo "Environment variable GEO_DIR:"
-          echo "$GEO_DIR"
+          ls -la ${GITHUB_WORKSPACE}
           mkdir -p ${GITHUB_WORKSPACE}/geo
-          ls -la ${GITHUB_WORKSPACE}/geo || true
+          ls -la ${GITHUB_WORKSPACE}/geo
 
       - name: Debug Path Handling
         shell: bash
