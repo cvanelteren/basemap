@@ -101,7 +101,7 @@ jobs:
 
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >-
             mkdir "{dest_dir}\libs" &&
-            copy "%GEO_DIR%\bin\geos*.dll" "{dest_dir}\libs\" &&
+            copy "${{ env.GEO_DIR }}\bin\*.dll" "{dest_dir}\libs\" &&
             copy "{wheel}" "{dest_dir}\" &&
             dir /s /b "{dest_dir}\libs"
 
