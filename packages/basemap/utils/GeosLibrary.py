@@ -252,7 +252,7 @@ class GeosLibrary(object):
             config_opts += ["-DCMAKE_CXX_FLAGS='/wd4251 /wd4355 /wd4458 /wd4530 /EHsc'"]
             if version >= (3, 6, 0) and sys.version_info[:2] >= (3, 3):
                 # Explicitly set Visual Studio generator
-                config_opts = ["-G", "Visual Studio 17 2022"] + config_opts
+                config_opts = ["-G", "Visual Studio 16 2019"] + config_opts
                 config_opts = ["-A", "x64" if win64 else "Win32"] + config_opts
                 if toolset is not None:
                     try:
