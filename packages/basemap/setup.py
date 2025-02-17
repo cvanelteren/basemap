@@ -83,6 +83,7 @@ def get_extension_kwargs():
         "include_dirs": include_dirs,
         "library_dirs": library_dirs,
         "runtime_library_dirs": runtime_library_dirs,
+        "data_files", data_files,
     }
 
 
