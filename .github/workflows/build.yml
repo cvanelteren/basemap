@@ -88,9 +88,6 @@ jobs:
 
           CIBW_ENVIRONMENT: |
             GEOS_DIR=${{ env.GEO_DIR }}
-            CFLAGS="-I${{ env.GEO_DIR }}/include"
-            LDFLAGS="-L${{ env.GEO_DIR }}/lib"
-            LD_LIBRARY_PATH="${{ env.GEO_DIR }}/lib:$LD_LIBRARY_PATH"
 
           CIBW_TEST_COMMAND: >-
             python -c "import mpl_toolkits.basemap" &&
