@@ -50,9 +50,9 @@ def get_extension_kwargs():
         # Convert to Path object if it isn't already
         geos_prefix = Path(geos_prefix)
 
-        include_dir = str(geos_prefix / "include")
-        lib_dir = str(geos_prefix / "lib")
-        lib64_dir = str(geos_prefix / "lib64")
+        include_dir = geos_prefix / "include"
+        lib_dir = geos_prefix / "lib"
+        lib64_dir = geos_prefix / "lib64"
 
         print("Include dir:", include_dir)  # Debug print
         print("Library dirs:", [lib_dir, lib64_dir])  # Debug print
@@ -70,7 +70,7 @@ def get_extension_kwargs():
             dlls = list(geos_prefix.glob("**/*geos_c*.dll"))
             if dlls:
                 # Convert Path objects to strings
-                dll_paths = [Path(str(dll)) for dll in dlls]
+                dll_paths = [Path(dll) for dll in dlls]
                 data_files.append(("../..", sorted(dll_paths)))
 
     return {
