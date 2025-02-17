@@ -100,10 +100,13 @@ jobs:
             {wheel}
 
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >-
+            echo "Copying DLLs..." &&
             mkdir "{dest_dir}\libs" &&
             copy "${{ env.GEO_DIR }}\bin\*.dll" "{dest_dir}\libs\" &&
-            copy "{wheel}" "{dest_dir}\" &&
-            dir /s /b "{dest_dir}\libs"
+            echo "DLLs copied:" &&
+            dir /s /b "{dest_dir}\libs" &&
+            echo "Copying wheel:" &&
+            copy "{wheel}" "{dest_dir}\"
 
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: >-
             mkdir -p {dest_dir}/.libs &&
@@ -113,9 +116,19 @@ jobs:
           CIBW_TEST_COMMAND_WINDOWS: >-
             pip install pytest pytest-cov &&
             pip install {wheel} &&
-            set "PATH=${{ env.GEO_DIR }}\bin;%PATH%" &&
+            echo "Checking Python path:" &&
+            python -c "import sys; print('\n'.join(sys.path))" &&
+            echo "Checking package structure:" &&
             python -c "import mpl_toolkits; print('mpl_toolkits location:', mpl_toolkits.__file__)" &&
-            python -c "from mpl_toolkits import basemap; print('basemap location:', basemap.__file__)" &&
+            echo "Checking GEOS DLLs:" &&
+            dir /s /b "${{ env.GEO_DIR }}\bin\*.dll" &&
+            echo "Setting PATH:" &&
+            set "PATH=${{ env.GEO_DIR }}\bin;%PATH%" &&
+            echo "Current PATH:" &&
+            echo %PATH% &&
+            echo "Trying import:" &&
+            python -c "from mpl_toolkits import basemap; print('Import successful')" &&
+            echo "Running tests:" &&
             python -m pytest "{project}\test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
 
           CIBW_TEST_COMMAND: >-
