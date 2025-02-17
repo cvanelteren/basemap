@@ -62,7 +62,7 @@ def get_extension_kwargs():
         runtime_library_dirs = library_dirs.copy()
 
         if os.name == "nt" or sys.platform == "cygwin":
-            bin_dir = str(geos_prefix / "bin")
+            bin_dir = geos_prefix / "bin"
             library_dirs.append(bin_dir)
             runtime_library_dirs = []
 
@@ -70,7 +70,7 @@ def get_extension_kwargs():
             dlls = list(geos_prefix.glob("**/*geos_c*.dll"))
             if dlls:
                 # Convert Path objects to strings
-                dll_paths = [str(dll) for dll in dlls]
+                dll_paths = [Path(str(dll)) for dll in dlls]
                 data_files.append(("../..", sorted(dll_paths)))
 
     return {

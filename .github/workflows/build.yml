@@ -61,7 +61,7 @@ jobs:
       - name: Set GEO_DIR (Unix)
         if: runner.os != 'Windows'
         run: |
-          echo "GEO_DIR=${{ github.workspace }}/geo" >> $GITHUB_ENV
+          echo "GEOS_DIR=${{ github.workspace }}/geo" >> $GITHUB_ENV
           echo "Runner OS: ${RUNNER_OS}"
           echo "Set GEO_DIR to: ${{ env.GEO_DIR }}"
           ls -la ${{ env.GEO_DIR }}
@@ -70,9 +70,9 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          echo "GEO_DIR=./geo" >> $GITHUB_ENV
+          echo "GEOS_DIR=./geo" >> $GITHUB_ENV
           echo "Runner OS: ${RUNNER_OS}"
-          echo "Set GEO_DIR to: ${{ env.GEO_DIR }}"
+          echo "Set GEO_DIR to: ${GEO_DIR}"
           ls -la ${{ env.GEO_DIR }}
 
       - name: Build wheels
@@ -82,10 +82,7 @@ jobs:
           CIBW_SKIP: "*-manylinux_i686 *-musllinux* pp*"
 
           CIBW_BEFORE_BUILD: >
-            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR}}', njobs=16)"
-
-          CIBW_ENVIRONMENT: |
-            GEOS_DIR=${{ env.GEO_DIR }}
+            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEOS_DIR}}', njobs=16)"
 
           CIBW_TEST_COMMAND: >-
             python -c "import mpl_toolkits.basemap" &&
