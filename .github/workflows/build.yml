@@ -61,21 +61,10 @@ jobs:
       - name: Set GEO src directory (Unix)
         shell: bash
         run: |
-          echo "GEO_DIR=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
-          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+          echo GEO_DIR={project}/geos
           echo "Runner OS: ${RUNNER_OS}"
-          echo "Set GEO_DIR to: ${GITHUB_WORKSPACE}"
-          ls -la ${GITHUB_WORKSPACE}
-          mkdir -p ${GITHUB_WORKSPACE}
-          ls -la ${GITHUB_WORKSPACE}
-
-      - name: Debug Path Handling
-        shell: bash
-        run: |
-          echo "GITHUB_WORKSPACE raw: ${GITHUB_WORKSPACE}"
-          echo "Constructed path: ${GITHUB_WORKSPACE}"
-          echo "After setting:"
-          echo "GEO_DIR: $GEO_DIR"
+          echo "Set GEO_DIR to: ${GEO_DIR}"
+          ls -la $GEO_DIR
 
       - name: Build wheels
         env:
