@@ -106,10 +106,10 @@ jobs:
             python -c "from mpl_toolkits import basemap; print('Import successful')" &&
             python -m pytest "{project}\test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
 
-          CIBW_REPAIR_WHEEL_COMMAND_MACOS: >-
-            mkdir -p {dest_dir}/.libs &&
-            cp ${{ env.GEO_DIR }}/lib/libgeos*.dylib {dest_dir}/.libs/ &&
-            delocate-wheel -w {dest_dir} -v {wheel}
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >-
+            mkdir "{project}\mpl_toolkits\basemap" 2>NUL &&
+            copy "%GEO_DIR%\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
+            delvewheel repair -w {dest_dir} {wheel}
 
           CIBW_TEST_COMMAND: >-
             cd {project} &&
