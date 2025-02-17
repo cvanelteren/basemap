@@ -25,7 +25,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-      fail-fast: false
+      fail-fast: true
 
     steps:
       - uses: actions/checkout@v4
@@ -49,8 +49,6 @@ jobs:
       - name: Setup Visual Studio Developer Command Prompt
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
 
       - name: Setup C++ toolchain (macOS)
         if: runner.os == 'macOS'
@@ -60,20 +58,7 @@ jobs:
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==2.16.2
 
-      - name: Set GEO src directory (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          echo "GEO_DIR=D:/a/basemap/basemap/geo" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          echo "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
-          echo "Runner OS: $env:RUNNER_OS"
-          echo "Set GEO_DIR to: $env:GITHUB_WORKSPACE\geo"
-          Get-ChildItem $env:GITHUB_WORKSPACE
-          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\geo"
-          Get-ChildItem "$env:GITHUB_WORKSPACE\geo"
-
       - name: Set GEO src directory (Unix)
-        if: runner.os != 'Windows'
         shell: bash
         run: |
           echo "GEO_DIR=${GITHUB_WORKSPACE}/geo" >> $GITHUB_ENV
@@ -100,47 +85,13 @@ jobs:
           CIBW_BEFORE_BUILD: >
             python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR}}', njobs=16)"
 
-          CIBW_ENVIRONMENT_WINDOWS: |
-            GEOS_DIR=${{ env.GEO_DIR }}
-            INCLUDE=${{ env.GEO_DIR }}\include;%%INCLUDE%%
-            LIB=${{ env.GEO_DIR }}\lib;%%LIB%%
-            PATH=${{ env.GEO_DIR }}\bin;%%PATH%%
-            CFLAGS="/I${{ env.GEO_DIR }}\include"
-            LDFLAGS="/LIBPATH:${{ env.GEO_DIR }}\lib"
-
-          CIBW_ENVIRONMENT_LINUX: |
+          CIBW_ENVIRONMENT: |
             GEOS_DIR=${{ env.GEO_DIR }}
             CFLAGS="-I${{ env.GEO_DIR }}/include"
             LDFLAGS="-L${{ env.GEO_DIR }}/lib"
             LD_LIBRARY_PATH="${{ env.GEO_DIR }}/lib:$LD_LIBRARY_PATH"
 
-          CIBW_ENVIRONMENT_MACOS: |
-            GEOS_DIR=${{ env.GEO_DIR }}
-            CFLAGS=-I${{ env.GEO_DIR }}/include
-            LDFLAGS=-L${{ env.GEO_DIR }}/lib
-            DYLD_LIBRARY_PATH=${{ env.GEO_DIR }}/lib:$DYLD_LIBRARY_PATH
-            CMAKE_GENERATOR="Unix Makefiles"
-            CFLAGS="-I${{ env.GEO_DIR }}/include"
-            LDFLAGS="-LIBPATH:${{ env.GEO_DIR }}/lib"
-
-          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >-
-            dir "%GEOS_DIR%\bin" &&
-            mkdir "{project}\mpl_toolkits\basemap" 2>NUL &&
-            copy "%GEOS_DIR%\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
-            for /f "tokens=*" %%a in ('dir /b /s "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp*\build"') do copy "%GEOS_DIR%\bin\geos*.dll" "%%a" &&
-            for /f "tokens=*" %%a in ('dir /b /s "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp*\built_wheel"') do copy "%GEOS_DIR%\bin\geos*.dll" "%%a" &&
-            set PATH=%GEOS_DIR%\bin;%PATH% &&
-            delvewheel repair --no-dll-reference -w {dest_dir} {wheel}
-
-          CIBW_TEST_COMMAND_WINDOWS: >-
-            pip install pytest pytest-cov &&
-            pip install {wheel} &&
-            python -c "import os; print('DLL location check:'); print(os.listdir(os.path.dirname(__import__('mpl_toolkits.basemap').__file__)))" &&
-            python -c "from mpl_toolkits import basemap; print('Import successful')" &&
-            python -m pytest "{project}/test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
-
           CIBW_TEST_COMMAND: >-
-            pip install {wheel} &&
             python -c "import mpl_toolkits.basemap" &&
             cd {project} &&
             pip install pytest pytest-cov &&
