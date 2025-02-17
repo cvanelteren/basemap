@@ -10,7 +10,8 @@ def get_geos_install_prefix():
     """Return GEOS installation prefix or None if not found."""
     env_candidate = os.environ.get("GEOS_DIR", None)
     if env_candidate is not None:
-        return env_candidate
+        # Normalize path separators for Windows
+        return os.path.normpath(env_candidate)
 
     candidates = [
         os.path.expanduser("~/local"),
@@ -28,8 +29,13 @@ def get_geos_install_prefix():
     libdirs = ["bin", "lib", "lib/x86_64-linux-gnu", "lib64"]
 
     for prefix in candidates:
+        # Normalize path for Windows
+        prefix = os.path.normpath(prefix)
         for libdir in libdirs:
-            if glob.glob(os.path.join(prefix, libdir, libname)):
+            # Use os.path.join for proper path construction
+            lib_path = os.path.join(prefix, libdir, libname)
+            # Use normalized glob pattern
+            if glob.glob(lib_path):
                 hfile = os.path.join(prefix, "include", "geos_c.h")
                 if os.path.isfile(hfile):
                     return prefix
@@ -45,18 +51,25 @@ def get_extension_kwargs():
     # Get GEOS paths
     geos_prefix = get_geos_install_prefix()
     if geos_prefix:
-        include_dirs.append(os.path.join(geos_prefix, "include"))
-        lib_dir = os.path.join(geos_prefix, "lib")
-        lib64_dir = os.path.join(geos_prefix, "lib64")
+        # Normalize all paths
+        include_dir = os.path.normpath(os.path.join(geos_prefix, "include"))
+        lib_dir = os.path.normpath(os.path.join(geos_prefix, "lib"))
+        lib64_dir = os.path.normpath(os.path.join(geos_prefix, "lib64"))
+
+        include_dirs.append(include_dir)
         library_dirs.extend([lib_dir, lib64_dir])
         runtime_library_dirs = library_dirs.copy()
 
         if os.name == "nt" or sys.platform == "cygwin":
-            bin_dir = os.path.join(geos_prefix, "bin")
+            bin_dir = os.path.normpath(os.path.join(geos_prefix, "bin"))
             library_dirs.append(bin_dir)
             runtime_library_dirs = []
-            dlls = glob.glob(os.path.join(geos_prefix, "*", "*geos_c*.dll"))
+            # Normalize dll path pattern
+            dll_pattern = os.path.join(geos_prefix, "*", "*geos_c*.dll")
+            dlls = glob.glob(dll_pattern)
             if dlls:
+                # Normalize dll paths
+                dlls = [os.path.normpath(dll) for dll in dlls]
                 data_files.append(("../..", sorted(dlls)))
 
     return {
