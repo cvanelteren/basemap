@@ -10,6 +10,7 @@ from pathlib import Path
 def get_geos_install_prefix():
     """Return GEOS installation prefix or None if not found."""
     env_candidate = os.environ.get("GEOS_DIR", None)
+    print("GEOS_DIR:", env_candidate)  # Debug print
     if env_candidate is not None:
         return Path(env_candidate)
 
