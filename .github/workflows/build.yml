@@ -79,7 +79,7 @@ jobs:
 
           CIBW_BEFORE_BUILD_WINDOWS: >-
             python -m pip install delvewheel &&
-            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR }}', generator='Visual Studio 17 2022', arch='x64', njobs=16)" &&
+            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR }}',  njobs=16)" &&
             dir "${{ env.GEO_DIR }}\include" &&
             dir "${{ env.GEO_DIR }}\lib"
 
@@ -104,13 +104,6 @@ jobs:
             DYLD_LIBRARY_PATH=${{ env.GEO_DIR }}/lib:$DYLD_LIBRARY_PATH
             CMAKE_GENERATOR="Unix Makefiles"
 
-          CIBW_TEST_COMMAND_WINDOWS: >-
-            pip install pytest pytest-cov &&
-            pip install {wheel} &&
-            python -c "import os; print('DLL location check:'); print(os.listdir(os.path.dirname(__import__('mpl_toolkits.basemap').__file__)))" &&
-            python -c "from mpl_toolkits import basemap; print('Import successful')" &&
-            python -m pytest "{project}/test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
-
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >-
             dir "%GEOS_DIR%\bin" &&
             mkdir "{project}\mpl_toolkits\basemap" 2>NUL &&
@@ -120,7 +113,16 @@ jobs:
             set PATH=%GEOS_DIR%\bin;%PATH% &&
             delvewheel repair --no-dll-reference -w {dest_dir} {wheel}
 
+          CIBW_TEST_COMMAND_WINDOWS: >-
+            pip install pytest pytest-cov &&
+            pip install {wheel} &&
+            python -c "import os; print('DLL location check:'); print(os.listdir(os.path.dirname(__import__('mpl_toolkits.basemap').__file__)))" &&
+            python -c "from mpl_toolkits import basemap; print('Import successful')" &&
+            python -m pytest "{project}/test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
+
           CIBW_TEST_COMMAND: >-
+            pip install {wheel} &&
+            python -c "import mpl_toolkits.basemap" &&
             cd {project} &&
             pip install pytest pytest-cov &&
             python -m pytest --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
