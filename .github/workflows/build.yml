@@ -70,10 +70,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          echo "GEOS_DIR=./geo" >> $GITHUB_ENV
+          echo GEOS_DIR=./geo
           echo "Runner OS: ${RUNNER_OS}"
-          echo "Set GEO_DIR to: ${GEOS_DIR}"
-          ls -la ${{ env.GEOS_DIR }}
 
       - name: Build wheels
         env:
