@@ -95,10 +95,6 @@ jobs:
             LDFLAGS=-L${{ env.GEO_DIR }}/lib
             DYLD_LIBRARY_PATH=${{ env.GEO_DIR }}/lib:$DYLD_LIBRARY_PATH
 
-          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >-
-            copy "${{ env.GEO_DIR }}\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
-            delvewheel repair -w {dest_dir} {wheel}
-
           CIBW_TEST_COMMAND_WINDOWS: >-
             pip install pytest pytest-cov &&
             pip install {wheel} &&
