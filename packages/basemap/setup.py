@@ -54,9 +54,6 @@ def get_extension_kwargs():
         lib_dir = geos_prefix / "lib"
         lib64_dir = geos_prefix / "lib64"
 
-        print("Include dir:", include_dir)  # Debug print
-        print("Library dirs:", [lib_dir, lib64_dir])  # Debug print
-
         include_dirs.append(include_dir)
         library_dirs.extend([lib_dir, lib64_dir])
         runtime_library_dirs = library_dirs.copy()
@@ -73,13 +70,16 @@ def get_extension_kwargs():
                 dll_paths = [Path(dll) for dll in dlls]
                 data_files.append(("../..", sorted(dll_paths)))
 
+    include_dirs = [str(i) for i in include_dirs]
+    library_dirs = [str(i) for i in library_dirs]
+    runtime_library_dirs = [str(i) for i in runtime_library_dirs]
     return {
         "name": "_geoslib",
         "sources": ["src/_geoslib.pyx"],
         "libraries": ["geos_c"],
-        "include_dirs": [str(i) for i in include_dirs],
-        "library_dirs": [str(i) for i in library_dirs],
-        "runtime_library_dirs": [str(i) for i in runtime_library_dirs],
+        "include_dirs": include_dir,
+        "library_dirs": library_dirs,
+        "runtime_library_dirs": runtime_library_dirs,
     }
 
 
