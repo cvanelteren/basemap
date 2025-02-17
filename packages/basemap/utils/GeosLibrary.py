@@ -251,16 +251,16 @@ class GeosLibrary(object):
             win64 = 8 * struct.calcsize("P") == 64
             config_opts += ["-DCMAKE_CXX_FLAGS='/wd4251 /wd4355 /wd4458 /wd4530 /EHsc'"]
             if version >= (3, 6, 0) and sys.version_info[:2] >= (3, 3):
-                # Explicitly set Visual Studio generator
-                config_opts = ["-G", "Visual Studio 16 2019"] + config_opts
-                config_opts = ["-A", "x64" if win64 else "Win32"] + config_opts
-                if toolset is not None:
-                    try:
-                        msvc = "v{0:d}".format(int(float(toolset) * 10))
-                    except (TypeError, ValueError):
-                        msvc = toolset
-                    config_opts += ["-DCMAKE_GENERATOR_TOOLSET={0}".format(msvc)]
-                build_opts = ["-j", "{0:d}".format(njobs)] + build_opts
+                config_opts = ["-G", "NMake Makefiles"] + config_opts
+                config_opts += ["-DCMAKE_EXE_LINKER_FLAGS='/MANIFEST:NO'"]
+                config_opts += ["-DCMAKE_SHARED_LINKER_FLAGS='/MANIFEST:NO'"]
+                build_opts.extend(
+                    [
+                        "--",
+                        "WIN64={0}".format("YES" if win64 else "NO"),
+                        "BUILD_BATCH={0}".format("YES" if njobs > 1 else "NO"),
+                    ]
+                )
         else:
             build_env["MAKEFLAGS"] = "-j {0:d}".format(njobs)
             if version >= (3, 7, 0):
