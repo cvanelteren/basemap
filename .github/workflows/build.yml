@@ -106,8 +106,10 @@ jobs:
             dir "%GEOS_DIR%\bin" &&
             mkdir "{project}\mpl_toolkits\basemap" 2>NUL &&
             copy "%GEOS_DIR%\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
-            copy "%GEOS_DIR%\bin\geos*.dll" . &&
-            delvewheel repair -w {dest_dir} {wheel}
+            copy "%GEOS_DIR%\bin\geos*.dll" "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp39-win_amd64\build\" &&
+            copy "%GEOS_DIR%\bin\geos*.dll" "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp39-win_amd64\built_wheel\" &&
+            set PATH=%GEOS_DIR%\bin;%PATH% &&
+            delvewheel repair --no-dll-reference -w {dest_dir} {wheel}
 
           CIBW_TEST_COMMAND: >-
             cd {project} &&
