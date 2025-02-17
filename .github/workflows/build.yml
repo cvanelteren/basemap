@@ -73,6 +73,10 @@ jobs:
           CIBW_BEFORE_BUILD: >
             python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR}}', njobs=16)"
 
+          CIBW_BEFORE_BUILD_WINDOWS: >-
+            python -m pip install delvewheel &&
+            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR }}', njobs=16)"
+
           CIBW_ENVIRONMENT_WINDOWS: |
             GEOS_DIR=${{ env.GEO_DIR }}
             INCLUDE=${{ env.GEO_DIR }}/include;%%INCLUDE%%
@@ -91,22 +95,18 @@ jobs:
             LDFLAGS=-L${{ env.GEO_DIR }}/lib
             DYLD_LIBRARY_PATH=${{ env.GEO_DIR }}/lib:$DYLD_LIBRARY_PATH
 
-          CIBW_REPAIR_WHEEL_COMMAND_LINUX: >-
-            mkdir -p {dest_dir}/.libs &&
-            cp ${{ env.GEO_DIR }}/lib/libgeos*.so* {dest_dir}/.libs/ &&
-            auditwheel repair
-            --lib-sdir .libs
-            -w {dest_dir}
-            {wheel}
-
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >-
-            echo "Copying DLLs..." &&
-            mkdir "{dest_dir}\libs" &&
-            copy "${{ env.GEO_DIR }}\bin\*.dll" "{dest_dir}\libs\" &&
-            echo "DLLs copied:" &&
-            dir /s /b "{dest_dir}\libs" &&
-            echo "Copying wheel:" &&
-            copy "{wheel}" "{dest_dir}\"
+            copy "${{ env.GEO_DIR }}\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
+            delvewheel repair -w {dest_dir} {wheel}
+
+          CIBW_TEST_COMMAND_WINDOWS: >-
+            pip install pytest pytest-cov &&
+            pip install {wheel} &&
+            python -c "import os; print('DLL location check:'); print(os.listdir(os.path.dirname(__import__('mpl_toolkits.basemap').__file__)))" &&
+            python -c "from mpl_toolkits import basemap; print('Import successful')" &&
+            python -m pytest "{project}\test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
+
+
 
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: >-
             mkdir -p {dest_dir}/.libs &&
