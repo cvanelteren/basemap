@@ -61,9 +61,9 @@ jobs:
       - name: Set GEO_DIR (Unix)
         if: runner.os != 'Windows'
         run: |
-          echo "GEOS_DIR=${{ github.workspace }}/geo" >> $GITHUB_ENV
+          echo "GEOS_DIR=~/geo" >> $GITHUB_ENV
           echo "Runner OS: ${RUNNER_OS}"
-          echo "Set GEO_DIR to: ${{ env.GEO_DIR }}"
+          echo "Set GEO_DIR to: ${GEOS_DIR}"
           ls -la ${{ env.GEO_DIR }}
 
       - name: Set GEO_DIR (Windows)
