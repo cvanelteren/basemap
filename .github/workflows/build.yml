@@ -106,7 +106,8 @@ jobs:
             dir "%GEOS_DIR%\bin" &&
             mkdir "{project}\mpl_toolkits\basemap" 2>NUL &&
             copy "%GEOS_DIR%\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
-            copy "%G
+            copy "%GEOS_DIR%\bin\geos*.dll" . &&
+            delvewheel repair -w {dest_dir} {wheel}
 
           CIBW_TEST_COMMAND: >-
             cd {project} &&
