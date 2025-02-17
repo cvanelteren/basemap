@@ -106,22 +106,10 @@ jobs:
             python -c "from mpl_toolkits import basemap; print('Import successful')" &&
             python -m pytest "{project}\test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
 
-
-
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: >-
             mkdir -p {dest_dir}/.libs &&
             cp ${{ env.GEO_DIR }}/lib/libgeos*.dylib {dest_dir}/.libs/ &&
             delocate-wheel -w {dest_dir} -v {wheel}
-
-          CIBW_TEST_COMMAND_WINDOWS: >-
-            pip install pytest pytest-cov &&
-            pip install {wheel} &&
-            python -c "import sys; print('\n'.join(sys.path))" &&
-            python -c "import mpl_toolkits; print('mpl_toolkits location:', mpl_toolkits.__file__)" &&
-            dir /s /b "${{ env.GEO_DIR }}\bin\*.dll" &&
-            set "PATH=${{ env.GEO_DIR }}\bin;%PATH%" &&
-            python -c "from mpl_toolkits import basemap; print('Import successful')" &&
-            python -m pytest "{project}\test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
 
           CIBW_TEST_COMMAND: >-
             cd {project} &&
