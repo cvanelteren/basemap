@@ -107,8 +107,8 @@ jobs:
             PATH=${{ env.GEO_DIR }}/bin;%%PATH%%
             CMAKE_GENERATOR="Visual Studio 17 2022"
             CMAKE_GENERATOR_PLATFORM="x64"
-            CFLAGS="-I ${{ env.GEO_DIR }}/include"
-            LDFLAGS="-L ${{ env.GEO_DIR }}/lib"
+            CFLAGS="/I${{ env.GEO_DIR }}/include"
+            LDFLAGS="/LIBPATH:${{ env.GEO_DIR }}/lib"
 
           CIBW_ENVIRONMENT_LINUX: |
             GEOS_DIR=${{ env.GEO_DIR }}
