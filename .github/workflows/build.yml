@@ -77,12 +77,6 @@ jobs:
           CIBW_BEFORE_BUILD: >
             python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR}}', njobs=16)"
 
-          CIBW_BEFORE_BUILD_WINDOWS: >-
-            python -m pip install delvewheel &&
-            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR }}',  njobs=16)" &&
-            dir "${{ env.GEO_DIR }}\include" &&
-            dir "${{ env.GEO_DIR }}\lib"
-
           CIBW_ENVIRONMENT_WINDOWS: |
             GEOS_DIR=${{ env.GEO_DIR }}
             INCLUDE=${{ env.GEO_DIR }}/include;%INCLUDE%
