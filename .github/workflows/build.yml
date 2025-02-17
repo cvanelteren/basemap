@@ -103,8 +103,10 @@ jobs:
             python -m pytest "{project}\test" --cov="mpl_toolkits.basemap" --cov-report=term --ignore=dist --ignore=build
 
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >-
+            dir "%GEOS_DIR%\bin" &&
             mkdir "{project}\mpl_toolkits\basemap" 2>NUL &&
-            copy "%GEO_DIR%\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
+            copy "%GEOS_DIR%\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
+            copy "%GEOS_DIR%\bin\geos*.dll" "{temp_dir}\" &&
             delvewheel repair -w {dest_dir} {wheel}
 
           CIBW_TEST_COMMAND: >-
