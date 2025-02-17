@@ -73,7 +73,7 @@ def get_extension_kwargs():
     include_dirs = [str(i) for i in include_dirs]
     library_dirs = [str(i) for i in library_dirs]
     runtime_library_dirs = [str(i) for i in runtime_library_dirs]
-    print("include_dirs": include_dirs)
+    print("include_dirs", include_dirs)
     print("library_dirs", library_dirs)
     print("runtime_library_dirs", runtime_library_dirs)
     return {
