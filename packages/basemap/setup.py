@@ -76,18 +76,20 @@ def get_extension_kwargs():
     print("include_dirs", include_dirs)
     print("library_dirs", library_dirs)
     print("runtime_library_dirs", runtime_library_dirs)
-    return dict(
-        name="_geoslib",
-        sources=["src/_geoslib.pyx"],
-        libraries=["geos_c"],
-        include_dirs=include_dirs,
-        library_dirs=library_dirs,
-        runtime_library_dirs=runtime_library_dirs,
-        data_files=data_files,
+    return (
+        dict(
+            name="_geoslib",
+            sources=["src/_geoslib.pyx"],
+            libraries=["geos_c"],
+            include_dirs=include_dirs,
+            library_dirs=library_dirs,
+            runtime_library_dirs=runtime_library_dirs,
+        ),
+        data_files,
     )
 
 
+kwargs, data_files = get_extension_kwargs()
 setup(
-    ext_modules=[Extension(**get_extension_kwargs())],
-    data_files=get_extension_kwargs().get("data_files", []),
+    ext_modules=[Extension(**kwargs, data_files=data_files)],
 )
