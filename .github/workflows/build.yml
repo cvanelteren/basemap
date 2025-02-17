@@ -35,13 +35,6 @@ jobs:
         with:
           python-version: "3.9"
 
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.13
         with:
@@ -69,21 +62,23 @@ jobs:
         shell: bash
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
-            echo "GEO_DIR=${{ github.workspace }}/geo" >> $GITHUB_ENV
+            echo "GEO_DIR=D:/a/basemap/basemap/geo" >> $GITHUB_ENV
           else
             echo "GEO_DIR=/project/geo" >> $GITHUB_ENV
           fi
 
       - name: Build wheels
         env:
-          CIBW_BUILD: "cp{39,310,311,312}-{manylinux_x86_64,win_amd64,macosx_x86_64}"
+          CIBW_BUILD: "cp{39,310,311,312}-{manylinux_x86_64,win_amd64,macosx_x86_64, macosx_amd64}"
           CIBW_SKIP: "*-manylinux_i686 *-musllinux* pp*"
           CIBW_BEFORE_BUILD: >
             python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR}}', njobs=16)"
 
           CIBW_BEFORE_BUILD_WINDOWS: >-
             python -m pip install delvewheel &&
-            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR }}', njobs=16)"
+            python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR }}', njobs=16)" &&
+            dir "${{ env.GEO_DIR }}\include" &&
+            dir "${{ env.GEO_DIR }}\lib"
 
           CIBW_ENVIRONMENT_WINDOWS: |
             GEOS_DIR=${{ env.GEO_DIR }}
@@ -114,10 +109,11 @@ jobs:
             dir "%GEOS_DIR%\bin" &&
             mkdir "{project}\mpl_toolkits\basemap" 2>NUL &&
             copy "%GEOS_DIR%\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
-            for /f "tokens=*" %%a in ('dir /b /s "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp*\build"') do copy "%GEOS_DIR%\bin\geos*.dll" "%%a" &&
-            for /f "tokens=*" %%a in ('dir /b /s "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp*\built_wheel"') do copy "%GEOS_DIR%\bin\geos*.dll" "%%a" &&
+            copy "%GEOS_DIR%\bin\geos*.dll" "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp39-win_amd64\build\" &&
+            copy "%GEOS_DIR%\bin\geos*.dll" "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp39-win_amd64\built_wheel\" &&
             set PATH=%GEOS_DIR%\bin;%PATH% &&
             delvewheel repair --no-dll-reference -w {dest_dir} {wheel}
+            dir
 
           CIBW_TEST_COMMAND: >-
             cd {project} &&
