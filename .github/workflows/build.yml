@@ -63,7 +63,19 @@ jobs:
       - name: Set GEO src directory
         shell: bash
         run: |
-          echo "GEO_DIR=${GITHUB_WORKSPACE}/geo" >> $GITHUB_ENV
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            echo "GEO_DIR=${GITHUB_WORKSPACE//\//\\}\\geo" >> $GITHUB_ENV
+          else
+            echo "GEO_DIR=${GITHUB_WORKSPACE}/geo" >> $GITHUB_ENV
+          fi
+          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+          echo "Runner OS: ${RUNNER_OS}"
+          echo "Set GEO_DIR to: ${GITHUB_WORKSPACE}/geo"
+          ls -la ${GITHUB_WORKSPACE} || true
+          echo "Environment variable GEO_DIR:"
+          echo "$GEO_DIR"
+          mkdir -p ${GITHUB_WORKSPACE}/geo
+          ls -la ${GITHUB_WORKSPACE}/geo || true
 
       - name: Build wheels
         env:
