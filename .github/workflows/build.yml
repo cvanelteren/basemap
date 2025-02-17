@@ -61,7 +61,7 @@ jobs:
         run: python -m pip install cibuildwheel==2.16.2
 
       - name: Set GEO src directory
-        shell: bash
+        shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
         run: |
           echo "GEO_DIR=${GITHUB_WORKSPACE}/geo" >> $GITHUB_ENV
           echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
