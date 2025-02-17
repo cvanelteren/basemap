@@ -70,7 +70,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          echo "GEO_DIR=${{ github.workspace }}\\geo" >> $GITHUB_ENV
+          echo "GEO_DIR=.\\geo" >> $GITHUB_ENV
           echo "Runner OS: ${RUNNER_OS}"
           echo "Set GEO_DIR to: ${{ env.GEO_DIR }}"
           ls -la ${{ env.GEO_DIR }}
