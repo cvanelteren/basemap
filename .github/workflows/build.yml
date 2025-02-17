@@ -95,6 +95,8 @@ jobs:
             LDFLAGS=-L${{ env.GEO_DIR }}/lib
             DYLD_LIBRARY_PATH=${{ env.GEO_DIR }}/lib:$DYLD_LIBRARY_PATH
             CMAKE_GENERATOR="Unix Makefiles"
+            CFLAGS="/I${{ env.GEO_DIR }}/include"
+            LDFLAGS="/LIBPATH:${{ env.GEO_DIR }}/lib"
 
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >-
             dir "%GEOS_DIR%\bin" &&
