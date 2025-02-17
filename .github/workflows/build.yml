@@ -65,7 +65,6 @@ jobs:
           echo "Runner OS: ${RUNNER_OS}"
           echo "GITHUB_ENV contents:"
           cat $GITHUB_ENV
-          ls -la $HOME/geo
 
       - name: Set GEO_DIR (Windows)
         if: runner.os == 'Windows'
