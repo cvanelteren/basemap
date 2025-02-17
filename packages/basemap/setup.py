@@ -77,7 +77,7 @@ def get_extension_kwargs():
         "name": "_geoslib",
         "sources": ["src/_geoslib.pyx"],
         "libraries": ["geos_c"],
-        "include_dirs": include_dir,
+        "include_dirs": include_dirs,
         "library_dirs": library_dirs,
         "runtime_library_dirs": runtime_library_dirs,
     }
