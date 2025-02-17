@@ -50,6 +50,8 @@ def get_extension_kwargs():
 
     # Get GEOS paths
     geos_prefix = get_geos_install_prefix()
+    # Debug print
+    print("Found GEOS prefix:", geos_prefix)
     if geos_prefix:
         # Normalize all paths
         include_dir = os.path.normpath(os.path.join(geos_prefix, "include"))
@@ -59,6 +61,10 @@ def get_extension_kwargs():
         include_dirs.append(include_dir)
         library_dirs.extend([lib_dir, lib64_dir])
         runtime_library_dirs = library_dirs.copy()
+
+        # Debug print
+        print("Include dir:", include_dir)
+        print("Library dirs:", [lib_dir, lib64_dir])
 
         if os.name == "nt" or sys.platform == "cygwin":
             bin_dir = os.path.normpath(os.path.join(geos_prefix, "bin"))
