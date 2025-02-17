@@ -61,7 +61,7 @@ jobs:
       - name: Set GEO_DIR (Unix)
         if: runner.os != 'Windows'
         run: |
-          echo "GEOS_DIR=$HOME/geo" >> $GITHUB_ENV
+          echo "GEOS_DIR={project}/geo" >> $GITHUB_ENV
           echo "Runner OS: ${RUNNER_OS}"
           echo "GITHUB_ENV contents:"
           cat $GITHUB_ENV
