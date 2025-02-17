@@ -80,6 +80,7 @@ jobs:
       - name: Build wheels
         env:
           CIBW_BUILD: cp{39,310,311,312}-{manylinux_x86_64,win_amd64,macosx_x86_64}
+          CIBW_ARCHS_MACOS: x86_64
           CIBW_SKIP: "*-manylinux_i686 *-musllinux* pp*"
 
           CIBW_BEFORE_BUILD: >
