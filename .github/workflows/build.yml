@@ -24,7 +24,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2019, macos-11]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v4
@@ -33,6 +34,13 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.9"
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.13
@@ -61,7 +69,7 @@ jobs:
         shell: bash
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
-            echo "GEO_DIR=D:/a/basemap/basemap/geo" >> $GITHUB_ENV
+            echo "GEO_DIR=${{ github.workspace }}/geo" >> $GITHUB_ENV
           else
             echo "GEO_DIR=/project/geo" >> $GITHUB_ENV
           fi
@@ -106,8 +114,8 @@ jobs:
             dir "%GEOS_DIR%\bin" &&
             mkdir "{project}\mpl_toolkits\basemap" 2>NUL &&
             copy "%GEOS_DIR%\bin\geos*.dll" "{project}\mpl_toolkits\basemap\" &&
-            copy "%GEOS_DIR%\bin\geos*.dll" "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp39-win_amd64\build\" &&
-            copy "%GEOS_DIR%\bin\geos*.dll" "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp39-win_amd64\built_wheel\" &&
+            for /f "tokens=*" %%a in ('dir /b /s "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp*\build"') do copy "%GEOS_DIR%\bin\geos*.dll" "%%a" &&
+            for /f "tokens=*" %%a in ('dir /b /s "C:\Users\runneradmin\AppData\Local\Temp\cibw-run-*\cp*\built_wheel"') do copy "%GEOS_DIR%\bin\geos*.dll" "%%a" &&
             set PATH=%GEOS_DIR%\bin;%PATH% &&
             delvewheel repair --no-dll-reference -w {dest_dir} {wheel}
 
