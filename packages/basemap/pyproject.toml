@@ -47,9 +47,6 @@ packages = ["mpl_toolkits", "mpl_toolkits.basemap"]
 package-dir = {"" = "src"}
 license-files = ["LICENSE", "LICENSE.geos"]
 
-[tool.setuptools.ext_modules]
-_geoslib = {sources = ["src/_geoslib.pyx"]}
-
 [tool.setuptools.package-data]
 "mpl_toolkits.basemap" = ["data/*"]
 
