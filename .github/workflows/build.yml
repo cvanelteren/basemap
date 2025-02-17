@@ -64,7 +64,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          echo "GEO_DIR=$env:GITHUB_WORKSPACE\geo" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "GEO_DIR=D:/a/basemap/basemap/geo" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           echo "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
           echo "Runner OS: $env:RUNNER_OS"
           echo "Set GEO_DIR to: $env:GITHUB_WORKSPACE\geo"
