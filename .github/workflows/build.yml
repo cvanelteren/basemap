@@ -70,7 +70,6 @@ jobs:
       - name: Build wheels
         env:
           CIBW_BUILD: "cp{39,310,311,312}-{manylinux_x86_64,win_amd64,macosx_x86_64, macosx_amd64}"
-          CIBW_SKIP: "*-manylinux_i686 *-musllinux* pp*"
           CIBW_BEFORE_BUILD: >
             python -c "import utils; utils.GeosLibrary('${{ env.GEO_VERSION }}').build('${{ env.GEO_DIR}}', njobs=16)"
 
