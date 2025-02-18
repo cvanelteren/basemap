@@ -88,7 +88,7 @@ jobs:
             echo "Starting BEFORE_ALL script"
             cd "{package}"
             export GEOS_DIR="$(pwd)/extern"
-            python -c "import sys; sys.path.append('utils'); from GeosLibrary import GeosLibrary; GeosLibrary(' ${env.GEOS_VERSION}} ', root='extern').build('extern', njobs=16)"
+            python -c "import sys; sys.path.append('utils'); from GeosLibrary import GeosLibrary; GeosLibrary(' $"{{env.GEOS_VERSION}} ', root='extern').build('extern', njobs=16)"
 
           CIBW_BEFORE_ALL_WINDOWS: >-
             pwsh -Command "
