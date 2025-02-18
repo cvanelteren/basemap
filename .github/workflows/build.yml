@@ -71,7 +71,6 @@ jobs:
               PIP_RETRIES=0
               PYTHONUNBUFFERED=1
               PYTHONWARNINGS="ignore:DEPRECATION"
-
           - os: windows-latest
             before_all: >-
               pwsh -Command "
