@@ -90,7 +90,7 @@ jobs:
             echo "Starting BEFORE_ALL script"
             cd "{package}"
             export GEOS_DIR="$(pwd)/extern"
-            python -c "import sys; sys.path.append('utils'); from GeosLibrary import GeosLibrary; GeosLibrary(' '3.6.5', root='extern').build('extern', njobs=16)"
+            python -c "import sys; sys.path.append('utils'); from GeosLibrary import GeosLibrary; GeosLibrary( '3.6.5', root='extern').build('extern', njobs=16)"
 
           CIBW_BEFORE_ALL_WINDOWS: >-
             pwsh -Command "
@@ -98,7 +98,7 @@ jobs:
             $pwd = Get-Location;
             Set-Location '{package}';
             $env:GEOS_DIR = '{package}/extern';
-            python -c 'import sys, os; sys.path.append(\"utils\"); from GeosLibrary import GeosLibrary; GeosLibrary(\" 3.6.5 \").build(\"extern\", njobs=16)'
+            python -c 'import sys, os; sys.path.append(\"utils\"); from GeosLibrary import GeosLibrary; GeosLibrary(\"3.6.5\").build(\"extern\", njobs=16)'
 
           CIBW_ENVIRONMENT: >-
             CFLAGS="-I/project/packages/basemap/extern/include -I/project/packages/basemap/extern/include/geos"
