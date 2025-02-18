@@ -92,7 +92,6 @@ jobs:
               PIP_RETRIES=0
               PYTHONUNBUFFERED=1
               PYTHONWARNINGS="ignore:DEPRECATION"
-            test_command: pytest -v -n auto --durations=0 --cov=basemap --cov-report=term-missing
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -115,6 +114,7 @@ jobs:
           CIBW_ENVIRONMENT: ${{ matrix.environment }}
           CIBW_BUILD_REQUIRES: "cython>=0.29,<3.1"
           CIBW_REPAIR_WHEEL_COMMAND: ""
+          CIBWD_TEST_COMMAND: pytest -v -n auto --durations=0 --cov=basemap --cov-report=term-missing
         with:
           package-dir: packages/basemap
 
