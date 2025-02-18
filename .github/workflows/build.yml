@@ -129,11 +129,10 @@ jobs:
         with:
           package-dir: packages/basemap
 
-      - name: Bundle data packages into wheel
+      - name: Verify bundled data
         run: |
           cd ${{ env.PKGDIR }}
-          cp -r packages/basemap/data/basemap_data dist/
-          cp -r packages/basemap/data/basemap_hires dist/
+          ls -l dist
 
       - name: Repair wheel
         run: |
