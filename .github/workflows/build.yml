@@ -103,13 +103,13 @@ jobs:
           python-version: "3.9"
 
       - name: Download GEOS artifacts
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: artifacts-geos-${{ matrix.arch }}
           path: ${{ env.PKGDIR }}/extern
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: artifacts-build-${{ matrix.arch }}-${{ matrix.python-version }}
           path: ${{ env.PKGDIR }}/dist
