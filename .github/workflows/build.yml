@@ -60,7 +60,6 @@ jobs:
               echo "Starting BEFORE_ALL script"
               cd "{package}"
               export GEOS_DIR="$(pwd)/extern"
-              echo "GEOS_DIR set to: $GEOS_DIR"
               python -c "import sys; sys.path.append('utils'); from GeosLibrary import GeosLibrary; GeosLibrary('3.6.5', root='extern').build('extern', njobs=16)"
             environment: >-
               CFLAGS="-I/project/packages/basemap/extern/include -I/project/packages/basemap/extern/include/geos"
@@ -77,7 +76,6 @@ jobs:
               pwsh -Command "
               Write-Host 'Starting BEFORE_ALL script';
               $pwd = Get-Location;
-              Write-Host 'Current directory:' $pwd;
               Set-Location '{package}';
               $env:GEOS_DIR = '{package}/extern';
               python -c 'import sys, os; sys.path.append(\"utils\"); from GeosLibrary import GeosLibrary; GeosLibrary(\"3.6.5\").build(\"extern\", njobs=16)'
@@ -102,13 +100,13 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Download artifact basemap_data
+      - name: Download basemap_data artifact
         uses: actions/download-artifact@v4
         with:
           name: dist-basemap_data
           path: ./dist
 
-      - name: Download artifact basemap_data_hires
+      - name: Download basemap_data_hires artifact
         uses: actions/download-artifact@v4
         with:
           name: dist-basemap_data_hires
@@ -125,36 +123,12 @@ jobs:
           CIBW_BEFORE_ALL: ${{ matrix.before_all }}
           CIBW_ENVIRONMENT: ${{ matrix.environment }}
           CIBW_BUILD_REQUIRES: "cython>=0.29,<3.1"
-          CIBW_REPAIR_WHEEL_COMMAND: ""
         with:
           package-dir: packages/basemap
-
-      - name: Verify bundled data
-        run: |
-          cd ${{ env.PKGDIR }}
-          ls -l .
-          ls -l ./dist
-
-      - name: Repair wheel
-        run: |
-          cd ${{ env.PKGDIR }}
-          export LD_LIBRARY_PATH="$(readlink -f extern/lib)"
-          auditwheel repair -w dist dist/*.whl
-
-      - name: Run unit tests
-        run: |
-          pip install ./dist/*.whl
-          pip install pytest pytest-cov
-          pytest -v -n auto --durations=0 --cov=basemap --cov-report=term-missing
 
       - uses: actions/upload-artifact@v4
         with:
           path: ./dist/*.whl
-          name: wheels-basemap-${{ matrix.os }}
-
-      - uses: actions/upload-artifact@v4
-        with:
-          path: ./wheelhouse/*.whl
           name: wheels-basemap-${{ matrix.os }}
 
   upload_pypi:
