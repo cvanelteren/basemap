@@ -60,7 +60,7 @@ jobs:
               echo "Starting BEFORE_ALL script"
               cd "{package}"
               export GEOS_DIR="$(pwd)/extern"
-              python -c "import sys; sys.path.append('utils'); from GeosLibrary import GeosLibrary; GeosLibrary('${{ evn.GEOS_VERSION }}', root='extern').build('extern', njobs=16)"
+              python -c "import sys; sys.path.append('utils'); from GeosLibrary import GeosLibrary; GeosLibrary('${{ env.GEOS_VERSION }}', root='extern').build('extern', njobs=16)"
             environment: >-
               CFLAGS="-I/project/packages/basemap/extern/include -I/project/packages/basemap/extern/include/geos"
               LDFLAGS="-L/project/packages/basemap/extern/lib"
