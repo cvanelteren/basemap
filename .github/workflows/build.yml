@@ -52,7 +52,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        GEOS_VERSION: "3.6.5"
+        GEOS_VERSION: ["3.6.5"]
         include:
           - os: ubuntu-latest
             before_all: |
