@@ -122,7 +122,7 @@ jobs:
             PYTHONWARNINGS="ignore:DEPRECATION"
           CIBW_BUILD_REQUIRES: "cython>=0.29,<3.1"
           CIBW_REPAIR_WHEEL_COMMAND: |
-            export LD_LIBRARY_PATH="/packages/basemap/extern/lib"
+            cp extern/lib/libgeos*.so* {dest_dir}
             auditwheel repair -w {dest_dir} {wheel}
 
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: ""
