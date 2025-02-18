@@ -123,6 +123,10 @@ jobs:
           CIBW_BEFORE_ALL: ${{ matrix.before_all }}
           CIBW_ENVIRONMENT: ${{ matrix.environment }}
           CIBW_BUILD_REQUIRES: "cython>=0.29,<3.1"
+          CIBW_REPAIR_WHEEL_COMMAND: |
+            export LD_LIBRARY_PATH="$(readlink -f extern/lib)"
+            auditwheel repair -w dist {package}-*.whl
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: ""
         with:
           package-dir: packages/basemap
 
