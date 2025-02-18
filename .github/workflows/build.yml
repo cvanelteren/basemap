@@ -160,12 +160,15 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - name: Install dependencies
+      - name: Install packages
         run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-cov numpy matplotlib
-          pip install --no-index --find-links dist/ basemap basemap_data basemap_data_hires
-
+          pip install -v --no-index --find-links dist/ basemap_data
+          pip install -v --no-index --find-links dist/ basemap_data_hires
+          pip install -v --no-index --find-links dist/ basemap
+      - name: Veryify installed packages
+        run: |
+          pip list
+          python -c "import mpl_toolkits.basemap; print(mpl_toolkits.basemap.__version__)"
       - name: Install GEOS (Linux)
         if: runner.os == 'Linux'
         run: |
