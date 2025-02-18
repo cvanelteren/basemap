@@ -79,7 +79,7 @@ jobs:
               $pwd = Get-Location;
               Set-Location '{package}';
               $env:GEOS_DIR = '{package}/extern';
-              python -c 'import sys, os; sys.path.append(\"utils\"); from GeosLibrary import GeosLibrary; GeosLibrary("'3.6.5'").build(\"extern\", njobs=16)'
+              python -c 'import sys, os; sys.path.append(\"utils\"); from GeosLibrary import GeosLibrary; GeosLibrary(\"3.6.5\").build(\"extern\", njobs=16)'
               "
             environment: >-
               GEOS_DIR="D:/a/basemap/basemap/packages/basemap/extern"
