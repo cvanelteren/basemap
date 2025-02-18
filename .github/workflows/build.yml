@@ -51,6 +51,7 @@ jobs:
     needs: [build_data]
     env:
       GEOS_VERSION: "3.6.5"
+
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
