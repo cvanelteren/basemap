@@ -126,7 +126,7 @@ jobs:
           CIBW_ENVIRONMENT: ${{ matrix.environment }}
           CIBW_BUILD_REQUIRES: "cython>=0.29,<3.1"
           CIBW_REPAIR_WHEEL_COMMAND: ""
-          CIBWD_TEST_COMMAND: pip install pytest pytest-cov && pytest -v -n auto --durations=0 --cov=basemap --cov-report=term-missing
+          CIBW_TEST_COMMAND: pip install pytest pytest-cov && pytest -v -n auto --durations=0 --cov=basemap --cov-report=term-missing
         with:
           package-dir: packages/basemap
 
