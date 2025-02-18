@@ -31,7 +31,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: "3.9"
 
       - name: Install build dependencies
         run: |
@@ -132,7 +132,8 @@ jobs:
       - name: Verify bundled data
         run: |
           cd ${{ env.PKGDIR }}
-          ls -l dist
+          ls -l .
+          ls -l ./dist
 
       - name: Repair wheel
         run: |
