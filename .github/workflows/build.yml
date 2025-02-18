@@ -162,8 +162,6 @@ jobs:
 
       - name: Install packages
         run: |
-          pip install -v --no-index --find-links dist/ basemap_data
-          pip install -v --no-index --find-links dist/ basemap_data_hires
           pip install -v --no-index --find-links dist/ basemap
       - name: Veryify installed packages
         run: |
