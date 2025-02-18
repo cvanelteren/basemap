@@ -111,7 +111,7 @@ jobs:
       - name: Download artifact basemap_data_hires
         uses: actions/download-artifact@v4
         with:
-          name: dist-basemap_data-hires
+          name: dist-basemap_data_hires
           path: ./dist
 
       - name: Build wheels
