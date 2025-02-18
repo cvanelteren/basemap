@@ -75,9 +75,17 @@ jobs:
         with:
           name: dist-basemap_data_hires
           path: ./dist
+
+      - name: Build SDist
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          pip install build
+          cd packages/basemap
+          python -m build --sdist
+          mv dist/* ../../dist/
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.22.0
-
         env:
           GEOS_VERSION: "3.6.5"
           CIBW_PROJECT_REQUIRES_PYTHON: ">=3.9"
@@ -131,7 +139,9 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          path: ./dist/*.whl
+          path: |
+            ./dist/*.whl
+            ./dist/*.tar.gz
           name: wheels-basemap-${{ matrix.os }}
 
   upload_pypi:
