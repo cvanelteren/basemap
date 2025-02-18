@@ -102,6 +102,18 @@ jobs:
         with:
           python-version: "3.9"
 
+      - name: Download GEOS artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: artifacts-geos-${{ matrix.arch }}
+          path: ${{ env.PKGDIR }}/extern
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: artifacts-build-${{ matrix.arch }}-${{ matrix.python-version }}
+          path: ${{ env.PKGDIR }}/dist
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.22.0
         env:
@@ -117,6 +129,23 @@ jobs:
           CIBWD_TEST_COMMAND: pip install pytest pytest-cov && pytest -v -n auto --durations=0 --cov=basemap --cov-report=term-missing
         with:
           package-dir: packages/basemap
+
+      - name: Bundle data packages into wheel
+        run: |
+          cd ${{ env.PKGDIR }}
+          cp -r packages/basemap/data/basemap_data dist/
+          cp -r packages/basemap/data/basemap_hires dist/
+
+      - name: Repair wheel
+        run: |
+          cd ${{ env.PKGDIR }}
+          export LD_LIBRARY_PATH="$(readlink -f extern/lib)"
+          auditwheel repair -w dist dist/*.whl
+
+      - uses: actions/upload-artifact@v4
+        with:
+          path: ./dist/*.whl
+          name: wheels-basemap-${{ matrix.os }}
 
       - uses: actions/upload-artifact@v4
         with:
