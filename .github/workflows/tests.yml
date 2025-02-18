@@ -1,0 +1,78 @@
+name: Unit Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    needs: [build_data, build_basemap]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download basemap wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-basemap-${{ matrix.os }}
+          path: dist
+          merge-multiple: true
+
+      - name: Download data packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-basemap_data-${{ matrix.os }}
+          path: dist
+          merge-multiple: true
+
+      - name: Download data_hires packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-basemap_data_hires-${{ matrix.os }}
+          path: dist
+          merge-multiple: true
+
+      - name: Install packages
+        run: |
+          pip install -v --no-index --find-links dist/ basemap
+
+      - name: Verify installed packages
+        run: |
+          pip list
+          python -c "import mpl_toolkits.basemap; print(mpl_toolkits.basemap.__version__)"
+
+      - name: Install GEOS (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          cd packages/basemap
+          export GEOS_DIR="$(pwd)/extern"
+          python -c "import sys; sys.path.append('utils'); from GeosLibrary import GeosLibrary; GeosLibrary('3.6.5', root='extern').build('extern', njobs=16)"
+
+      - name: Install GEOS (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cd packages/basemap
+          $env:GEOS_DIR = "$(pwd)/extern"
+          python -c "import sys; sys.path.append('utils'); from GeosLibrary import GeosLibrary; GeosLibrary('3.6.5').build('extern', njobs=16)"
+
+      - name: Run tests
+        run: |
+          cd packages/basemap/tests
+          pytest -v --cov=mpl_toolkits.basemap
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./packages/basemap/tests/.coverage
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
