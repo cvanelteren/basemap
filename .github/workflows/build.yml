@@ -52,9 +52,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        GEOS_VERSION: ["3.6.5"]
         include:
           - os: ubuntu-latest
+            env:
+              GEOS_VERSION: "3.6.5"
             before_all: |
               echo "Starting BEFORE_ALL script"
               cd "{package}"
@@ -71,6 +72,8 @@ jobs:
               PYTHONWARNINGS="ignore:DEPRECATION"
 
           - os: windows-latest
+            env:
+              GEOS_VERSION: "3.6.5"
             before_all: >-
               pwsh -Command "
               Write-Host 'Starting BEFORE_ALL script';
